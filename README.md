@@ -9,6 +9,8 @@ and y means yes
 It is used to unzip the files
 **sudo apt install jq:**
 It is json line processor
+![image](https://github.com/user-attachments/assets/03115346-767f-4a1e-845a-1b2dedb1b8be)
+
 
 
 
