@@ -10,6 +10,13 @@ It is used to unzip the files
 **sudo apt install jq:**
 It is json line processor
 ![image](https://github.com/user-attachments/assets/03115346-767f-4a1e-845a-1b2dedb1b8be)
+ipconfig: It will show IP address and interface name ,MAC Address and subnetmask,status...
+opened aws instance and connected
+
+root@ip-172-31-47-11:/home/ubuntu# echo $(date)
+Sat Jan 11 15:26:31 UTC 2025
+root@ip-172-31-47-11:/home/ubuntu#
+
 
 
 
