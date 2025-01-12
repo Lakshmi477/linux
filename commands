@@ -97,6 +97,115 @@ ubuntu@ip-172-31-47-11:~$ bash text.sh
 hi hello
 ubuntu@ip-172-31-47-11:~$
 
+#################################################
+# passing parameters
+# understanding about $? $@ $*#
+# output redirection
+
+#### to get the vpc info from diffrent regions
+ubuntu@ip-172-31-47-11:~$ aws ec2 describe-vpcs --region us-east-1
+{
+    "Vpcs": [
+        {
+            "OwnerId": "872515252269",
+            "InstanceTenancy": "default",
+            "CidrBlockAssociationSet": [
+                {
+                    "AssociationId": "vpc-cidr-assoc-0fb04b5219db5989e",
+                    "CidrBlock": "172.31.0.0/16",
+                    "CidrBlockState": {
+                        "State": "associated"
+                    }
+                }
+            ],
+            "IsDefault": true,
+            "BlockPublicAccessStates": {
+                "InternetGatewayBlockMode": "off"
+            },
+            "VpcId": "vpc-0364672fc0dc0dc34",
+            "State": "available",
+            "CidrBlock": "172.31.0.0/16",
+            "DhcpOptionsId": "dopt-06a880da3c6c2a171"
+        }
+    ]
+}
+ubuntu@ip-172-31-47-11:~$
+# but it is json format but not able to understand
+# we can make it using jq
+ubuntu@ip-172-31-47-11:~$ aws ec2 describe-vpcs --region us-east-1 | jq
+{
+  "Vpcs": [
+    {
+      "OwnerId": "872515252269",
+      "InstanceTenancy": "default",
+      "CidrBlockAssociationSet": [
+        {
+          "AssociationId": "vpc-cidr-assoc-0fb04b5219db5989e",
+          "CidrBlock": "172.31.0.0/16",
+          "CidrBlockState": {
+            "State": "associated"
+          }
+        }
+      ],
+      "IsDefault": true,
+      "BlockPublicAccessStates": {
+        "InternetGatewayBlockMode": "off"
+      },
+      "VpcId": "vpc-0364672fc0dc0dc34",
+      "State": "available",
+      "CidrBlock": "172.31.0.0/16",
+      "DhcpOptionsId": "dopt-06a880da3c6c2a171"
+    }
+  ]
+}
+ubuntu@ip-172-31-47-11:~$
+# now i will retrive only vpcid
+ubuntu@ip-172-31-47-11:~$ aws ec2 describe-vpcs --region us-east-1 | jq ".Vpcs[].VpcId"
+"vpc-0364672fc0dc0dc34"
+ubuntu@ip-172-31-47-11:~$
+# now i will remove the "" from the vpc id for that i am using trim
+ubuntu@ip-172-31-47-11:~$ aws ec2 describe-vpcs --region us-east-1 | jq ".Vpcs[].VpcId" -r
+vpc-0364672fc0dc0dc34
+ubuntu@ip-172-31-47-11:~$
+# another way we will use
+ubuntu@ip-172-31-47-11:~$ aws ec2 describe-vpcs --region us-east-1 | jq ".Vpcs[].VpcId" | tr -d '"'
+vpc-0364672fc0dc0dc34
+ubuntu@ip-172-31-47-11:~$
+# now changing the lower case to upper case
+
+ubuntu@ip-172-31-47-11:~$ aws ec2 describe-vpcs --region us-east-1 | jq ".Vpcs[].VpcId" | tr -d '"' | tr '[:lower:]' '[:upper:]'
+VPC-0364672FC0DC0DC34
+ubuntu@ip-172-31-47-11:~$
+# now upper to lower
+ubuntu@ip-172-31-47-11:~$ aws ec2 describe-vpcs --region us-east-1 | jq ".Vpcs[].VpcId" | tr -d '"' | tr  '[:upper:]' '[:lower"]'
+vpc-0364672fc0dc0dc34
+ubuntu@ip-172-31-47-11:~$
+## to chck the files an floder in details way
+root@ip-172-31-47-11:/home/ubuntu# ls -al
+total 66060
+drwxr-x--- 6 ubuntu ubuntu     4096 Jan 12 09:19 .
+drwxr-xr-x 3 root   root       4096 Jan 11 14:44 ..
+-rw------- 1 ubuntu ubuntu      244 Jan 12 09:15 .Xauthority
+-rw------- 1 ubuntu ubuntu      328 Jan 12 08:43 .bash_history
+-rw-r--r-- 1 ubuntu ubuntu      220 Mar 31  2024 .bash_logout
+-rw-r--r-- 1 ubuntu ubuntu     3771 Mar 31  2024 .bashrc
+drwx------ 2 ubuntu ubuntu     4096 Jan 11 14:54 .cache
+-rw------- 1 ubuntu ubuntu       20 Jan 12 07:43 .lesshst
+drwxrwxr-x 3 ubuntu ubuntu     4096 Jan 12 07:58 .local
+-rw-r--r-- 1 ubuntu ubuntu      807 Mar 31  2024 .profile
+drwx------ 2 ubuntu ubuntu     4096 Jan 11 14:44 .ssh
+-rw-r--r-- 1 ubuntu ubuntu        0 Jan 11 14:55 .sudo_as_admin_successful
+-rw------- 1 ubuntu ubuntu     2239 Jan 12 08:05 .viminfo
+-rw-r--r-- 1 root   root         32 Jan 12 06:17 abc
+drwxr-xr-x 3 root   root       4096 Jan 10 19:10 aws
+-rw-r--r-- 1 root   root   67577610 Jan 12 05:48 awscliv2.zip
+-rw-rw-r-- 1 ubuntu ubuntu       36 Jan 12 06:31 text.sh
+-rw-r--r-- 1 root   root          0 Jan 12 09:16 vpc
+-rwxrwxrwx 1 ubuntu ubuntu       82 Jan 12 09:19 vpc.sh
+root@ip-172-31-47-11:/home/ubuntu#
+
+
+
   
   
   
